@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCompetition } from '../context/CompetitionContext';
 
 // Define the available question types
@@ -27,7 +27,18 @@ const ManageQuestions = () => {
     
     const [currentQuestion, setCurrentQuestion] = useState(emptyQuestion);
     const [isEditing, setIsEditing] = useState(false);
-    // 
+    
+    // 🔔 NEW: State for success message
+    const [successMessage, setSuccessMessage] = useState(null); 
+
+    // 🔔 NEW: Function to display the message and clear it after a delay
+    const showSuccessMessage = (message) => {
+        setSuccessMessage(message);
+        // Clear the message after 3 seconds
+        setTimeout(() => {
+            setSuccessMessage(null);
+        }, 3000); 
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -116,10 +127,12 @@ const ManageQuestions = () => {
 
         if (isEditing) {
             editQuestion(questionToSave);
-            alert('Question updated successfully!');
+            // 🔔 NEW: Use showSuccessMessage instead of alert()
+            showSuccessMessage('Question updated successfully!'); 
         } else {
             addQuestion(questionToSave);
-            alert('Question added successfully!');
+            // 🔔 NEW: Use showSuccessMessage instead of alert()
+            showSuccessMessage('Question added successfully!'); 
         }
 
         // Reset the form after submission
@@ -152,7 +165,20 @@ const ManageQuestions = () => {
 
 
     return (
-        <div className="p-4">
+        <div className="p-4 relative"> {/* Added relative for message positioning */}
+             {/* 🔔 NEW: Success Message Component */}
+            {successMessage && (
+                <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 z-50">
+                    <div className="bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg flex items-center space-x-2 animate-bounce">
+                        <span>{successMessage}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+            )}
+            {/* END: Success Message Component */}
+
             <h2 className="text-4xl font-extrabold text-indigo-400 mb-8 text-center">
                 MANAGE QUESTION BANK
             </h2>
@@ -201,7 +227,7 @@ const ManageQuestions = () => {
                         </div>
                         
                         {/* 🎨 NEW: Picture Input Field (File Uploader) */}
-                         {currentQuestion.type === 'picture' && (
+                          {currentQuestion.type === 'picture' && (
                             <div className="space-y-3 p-4 bg-gray-700 rounded-lg">
                                 <p className="text-pink-300 font-semibold text-sm">Upload Image File (JPG/PNG):</p>
                                 <input 
@@ -341,11 +367,11 @@ const ManageQuestions = () => {
                                                     </div>
                                                 )}
                                                 {question.type === 'picture' && question.image_data && (
-                                                     <img 
-                                                        src={question.image_data} 
-                                                        alt="Question Preview" 
-                                                        className="h-10 w-auto object-cover rounded-md mt-1 border border-gray-600" 
-                                                    />
+                                                        <img 
+                                                             src={question.image_data} 
+                                                             alt="Question Preview" 
+                                                             className="h-10 w-auto object-cover rounded-md mt-1 border border-gray-600" 
+                                                         />
                                                 )}
                                             </td>
                                             <td className="px-4 py-4 whitespace-nowrap text-sm font-bold text-green-400">
@@ -362,6 +388,8 @@ const ManageQuestions = () => {
                                                     onClick={() => {
                                                         if (window.confirm('Are you sure you want to delete this question?')) {
                                                             deleteQuestion(question.id);
+                                                            // Optional: Show a message for deletion as well
+                                                            showSuccessMessage('Question deleted successfully!'); 
                                                         }
                                                     }} 
                                                     className="text-red-400 hover:text-red-600 transition"

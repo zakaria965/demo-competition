@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCompetition } from '../context/CompetitionContext';
 
-// ⏳ Timer Component
+// ⏳ Timer Component (Halkan waxba kama beddelayo)
 const Timer = ({ onTimerEnd, isPaused, currentQuestionId }) => {
     const defaultTime = 60;
     const [timeLeft, setTimeLeft] = useState(defaultTime);
@@ -45,7 +45,7 @@ const Timer = ({ onTimerEnd, isPaused, currentQuestionId }) => {
     );
 };
 
-// 🧹 Clean up question text
+// 🧹 Clean up question text (Halkan waxba kama beddelayo)
 const cleanQuestionText = (text) => {
     if (!text) return '';
     const regex = /^(?:question\s*\d+\s*:|q\s*\d+\s*:|\d+\.|\d+\))\s*/i;
@@ -57,11 +57,11 @@ const cleanQuestionText = (text) => {
 const Questions = () => {
     const {
         competitionData,
-        questionBank, // Hadda waa su'aalaha harsan
+        questionBank, 
         startQuestion,
         submitAnswer,
         recordMatchWinner,
-        finalizeCompetition, // Waxaan u baahanay inaan adeegsano markii Final Match la sameeyo
+        finalizeCompetition,
     } = useCompetition();
 
     const navigate = useNavigate();
@@ -80,7 +80,6 @@ const Questions = () => {
     const [revealAnswer, setRevealAnswer] = useState(false);
     const [isTimerPaused, setIsTimerPaused] = useState(false);
     const [winnerMessage, setWinnerMessage] = useState('');
-    // 💡 Hadda 'questionBank' waxa ay ku jirtaa su'aalaha harsan
     const availableQuestions = questionBank; 
 
 
@@ -89,7 +88,7 @@ const Questions = () => {
 
     const currentQuestion = questionBank.find(q => q.id === currentQuestionId);
 
-    // ✅ Handle choosing a question - Waxaan saaray logic-ga tirtiridda halkan, sababtoo ah submitAnswer ayaa samaynaya.
+    // ✅ Handle choosing a question 
     const handleQuestionSelection = (questionId) => {
         if (currentQuestionId !== null) {
             alert('A question is already active. Finish scoring first.');
@@ -100,8 +99,6 @@ const Questions = () => {
         setFeedback(null);
         setRevealAnswer(false);
         setIsTimerPaused(false);
-        
-        // ❌ Hadda tirtiridda waxaa sameeya submitAnswer markuu dhamaado.
     };
 
     const handleScoring = (isCorrect) => {
@@ -130,7 +127,7 @@ const Questions = () => {
         }
     };
 
-    // 🏆 Manual match winner selection
+    // 🏆 Manual match winner selection (Halkan ayaan ka saaray alert-kii si loogu isticmaalo winnerMessage)
     const handleWhoWinsMatch = () => {
         if (currentPair.length < 2) {
             alert('Match not ready yet!');
@@ -150,23 +147,22 @@ const Questions = () => {
             winnerName = team2.name;
         } else {
             winnerName = team1.name;
-            alert('Scores are tied! Defaulting to ' + team1.name + ' winning.');
+            // Waa inaad u sheegtaa dadka in tie-ka uu jiro, laakiin ha isticmaalin alert()
+            // Waxaan u isticmaalayaa winnerMessage si aan u muujiyo
+            setWinnerMessage(`⚠️ Scores are tied! Defaulting to "${team1.name}" winning.`); 
         }
 
         const loserName = winnerName === team1.name ? team2.name : team1.name;
 
         // Haddii uu yahay Final Round: Isticmaal Finalize Competition
-        // Tani waxay ku xidhnaanaysaa sida aad u maareyso Final Round-ka. Tusaale:
         const remainingTeams = teams.filter(t => !t.isEliminated).length;
-        if (remainingTeams <= 2 && currentRound > 1) { // Tusaale: Haddii laba koox kaliya ay hadheen oo uusan Round 1 ahayn.
+        if (remainingTeams <= 2 && currentRound > 1) { 
              finalizeCompetition(winnerName);
              setWinnerMessage(`🎊 FINAL CHAMPION: ${winnerName}! Competition is over.`);
-             alert(`🎊 FINAL CHAMPION: ${winnerName}! Competition is over.`);
         } else {
              recordMatchWinner(winnerName, loserName, currentRound, currentMatch);
              const message = `🏆 Match ${currentMatch} won by "${winnerName}" between ${team1.name} and ${team2.name}`;
-             setWinnerMessage(message);
-             alert(message);
+             setWinnerMessage(message); // Muuji fariinta guusha.
         }
     };
 
@@ -174,7 +170,6 @@ const Questions = () => {
         navigate('/lucky-draw');
     };
 
-    // ✅ Halkan waxaa lagu hagaajiyay inay si toos ah u aado Results Page
     const handleShowResults = () => {
         navigate('/results');
     };
@@ -253,12 +248,28 @@ const Questions = () => {
 
             {!currentQuestion ? (
                 <>
+                    {/* 🔔 Message-ka Guusha waxaan ku arkaynaa halkan */}
+                    {winnerMessage && (
+                        <div className="text-center text-xl font-bold mb-4 p-3 bg-green-900 border border-green-400 text-green-400 rounded-lg max-w-lg mx-auto animate-fadeIn">
+                            {winnerMessage}
+                            {/* Haddii ay dhamaatay ciyaartu oo Final Champion la hayo, navigate */}
+                            {winnerMessage.includes("FINAL CHAMPION") && (
+                                <button
+                                    onClick={handleShowResults}
+                                    className="block w-full py-2 mt-3 bg-green-700 hover:bg-green-800 text-white rounded transition"
+                                >
+                                    View Final Results
+                                </button>
+                            )}
+                        </div>
+                    )}
+                    {/* Dhammaadka Message-ka Guusha */}
+
                     <div className="max-w-4xl mx-auto p-4">
                         <h3 className="text-2xl font-bold text-gray-300 mb-4 text-center">
                             Select Next Question for {currentTeam ? currentTeam.name : 'Next Team'}:
                         </h3>
 
-                        {/* ✅ Halkan waxaa lagu arkay kaliya su'aalaha aan la isticmaalin (availableQuestions) */}
                         <div className="grid grid-cols-5 gap-4 mb-8">
                             {availableQuestions.map((q, index) => (
                                 <button
@@ -266,7 +277,6 @@ const Questions = () => {
                                     onClick={() => handleQuestionSelection(q.id)}
                                     className="py-4 px-2 text-lg font-bold rounded-lg shadow-lg transition duration-300 transform bg-blue-600 text-white hover:bg-blue-700 hover:scale-105"
                                 >
-                                    {/* Hadda lambarku wuu saxmayaa maxaa yeelay index-ka ayaa la isticmaalayaa oo kaliya su'aalaha hadhay */}
                                     {`Q ${index + 1}`} 
                                 </button>
                             ))}
@@ -279,11 +289,7 @@ const Questions = () => {
                         )}
                     </div>
 
-                    {winnerMessage && (
-                        <div className="text-center text-green-400 font-bold text-xl mb-4 p-3 bg-gray-700 rounded-lg max-w-lg mx-auto">
-                            {winnerMessage}
-                        </div>
-                    )}
+                    
                 </>
             ) : (
                 <div className="max-w-4xl mx-auto bg-gray-800 p-8 rounded-xl shadow-2xl border-t-4 border-pink-500 text-center">
