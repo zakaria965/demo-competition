@@ -86,7 +86,11 @@ const Results = () => {
 
   const motivationalMessages = [
     "Guulaystaha dhabta ah waa qofka isku dayay! 🏅 🚀",
-    ,
+    "Guulaystaha dhabta ah waa qofka isku dayay! 🏅 🚀",
+    "Guulaystaha dhabta ah waa qofka isku dayay! 🏅 🚀",
+    "Guulaystaha dhabta ah waa qofka isku dayay! 🏅 🚀",
+    "Guulaystaha dhabta ah waa qofka isku dayay! 🏅 🚀",
+    
   ];
   const randomMotivation = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
 

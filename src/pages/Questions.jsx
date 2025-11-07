@@ -161,7 +161,8 @@ const Questions = () => {
              setWinnerMessage(`🎊 FINAL CHAMPION: ${winnerName}! Competition is over.`);
         } else {
              recordMatchWinner(winnerName, loserName, currentRound, currentMatch);
-             const message = `🏆 Match ${currentMatch} won by "${winnerName}" between ${team1.name} and ${team2.name}`;
+             const message = `🏆 Match ${currentMatch}, the winner is  "${winnerName}"
+                 Congratulations! 🎉🎉🎉🎉`;
              setWinnerMessage(message); // Muuji fariinta guusha.
         }
     };
@@ -336,7 +337,7 @@ const Questions = () => {
                             onClick={() => setRevealAnswer(prev => !prev)}
                             className="text-white text-sm bg-gray-600 hover:bg-gray-500 py-1 px-3 rounded-full flex items-center mx-auto transition"
                         >
-                            {revealAnswer ? <>👁️ Hide Answer</> : <>👁️‍🗨️ Reveal Correct Answer</>}
+                            {revealAnswer ? <>👁️ Hide Answer</> : <>👁️‍🗨️ Look Correct Answer</>}
                         </button>
                         {revealAnswer && (
                             <p className="mt-3 text-2xl font-extrabold text-green-400 bg-gray-900 p-3 rounded">
